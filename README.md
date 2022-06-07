@@ -14,8 +14,7 @@ Lahav Lipson, Zachary Teed and Jia Deng<br/>
 }
 ```
 
-
-<img src="RAFTStereo.png">
+![RAFT-Stereo architecture overview.](architecture.png)
 
 ## Requirements
 The code has been tested with PyTorch 1.7 and Cuda 10.2.
@@ -23,9 +22,6 @@ The code has been tested with PyTorch 1.7 and Cuda 10.2.
 conda env create -f environment.yaml
 conda activate raftstereo
 ```
-
-
-
 
 ## Required Data
 To evaluate/train RAFT-stereo, you will need to download the required datasets. 
@@ -91,9 +87,9 @@ To save the disparity values as `.npy` files, run any of the demos with the `--s
 
 If the camera intrinsics and camera baseline are known, disparity predictions can be converted to depth values using
 
-<img src="depth_eq.png" width="320">
+$$ \text{depth} = \frac{\text{focal length}\,\times\,\text{baseline}}{|\,\text{disparity}+ \left(c_{x_1} - c_{x_0} \right)|} $$
 
-Note that the units of the focal length are _pixels_ not millimeters. (cx1-cx0) is the x-difference of principal points.
+Note that the units of the focal length are _pixels_ not millimeters. $ (c_{x_1} - c_{x_0}) $ is the x-difference of principal points.
 
 ## Evaluation
 

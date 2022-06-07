@@ -12,6 +12,8 @@ from raft_stereo import RAFTStereo, autocast
 import stereo_datasets as datasets
 from utils.utils import InputPadder
 
+DEVICE = "mps"
+
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
@@ -25,8 +27,8 @@ def validate_eth3d(model, iters=32, mixed_prec=False):
     out_list, epe_list = [], []
     for val_id in range(len(val_dataset)):
         _, image1, image2, flow_gt, valid_gt = val_dataset[val_id]
-        image1 = image1[None].cuda()
-        image2 = image2[None].cuda()
+        image1 = image1[None].to(DEVICE)
+        image2 = image2[None].to(DEVICE)
 
         padder = InputPadder(image1.shape, divis_by=32)
         image1, image2 = padder.pad(image1, image2)
@@ -67,8 +69,8 @@ def validate_kitti(model, iters=32, mixed_prec=False):
     out_list, epe_list, elapsed_list = [], [], []
     for val_id in range(len(val_dataset)):
         _, image1, image2, flow_gt, valid_gt = val_dataset[val_id]
-        image1 = image1[None].cuda()
-        image2 = image2[None].cuda()
+        image1 = image1[None].to(DEVICE)
+        image2 = image2[None].to(DEVICE)
 
         padder = InputPadder(image1.shape, divis_by=32)
         image1, image2 = padder.pad(image1, image2)
@@ -117,8 +119,8 @@ def validate_things(model, iters=32, mixed_prec=False):
     out_list, epe_list = [], []
     for val_id in tqdm(range(len(val_dataset))):
         _, image1, image2, flow_gt, valid_gt = val_dataset[val_id]
-        image1 = image1[None].cuda()
-        image2 = image2[None].cuda()
+        image1 = image1[None].to(DEVICE)
+        image2 = image2[None].to(DEVICE)
 
         padder = InputPadder(image1.shape, divis_by=32)
         image1, image2 = padder.pad(image1, image2)
@@ -156,8 +158,8 @@ def validate_middlebury(model, iters=32, split='F', mixed_prec=False):
     out_list, epe_list = [], []
     for val_id in range(len(val_dataset)):
         (imageL_file, _, _), image1, image2, flow_gt, valid_gt = val_dataset[val_id]
-        image1 = image1[None].cuda()
-        image2 = image2[None].cuda()
+        image1 = image1[None].to(DEVICE)
+        image2 = image2[None].to(DEVICE)
 
         padder = InputPadder(image1.shape, divis_by=32)
         image1, image2 = padder.pad(image1, image2)
@@ -219,7 +221,7 @@ if __name__ == '__main__':
         model.load_state_dict(checkpoint, strict=True)
         logging.info(f"Done loading checkpoint")
 
-    model.cuda()
+    model.to(DEVICE)
     model.eval()
 
     print(f"The model has {format(count_parameters(model)/1e6, '.2f')}M learnable parameters.")

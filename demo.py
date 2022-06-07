@@ -13,7 +13,7 @@ from PIL import Image
 from matplotlib import pyplot as plt
 
 
-DEVICE = 'cuda'
+DEVICE = torch.device('mps')
 
 def load_image(imfile):
     img = np.array(Image.open(imfile)).astype(np.uint8)
@@ -22,7 +22,7 @@ def load_image(imfile):
 
 def demo(args):
     model = torch.nn.DataParallel(RAFTStereo(args), device_ids=[0])
-    model.load_state_dict(torch.load(args.restore_ckpt))
+    model.load_state_dict(torch.load(args.restore_ckpt, map_location=torch.device("cpu")))
 
     model = model.module
     model.to(DEVICE)

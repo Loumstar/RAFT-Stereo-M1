@@ -15,6 +15,8 @@ from core.raft_stereo import RAFTStereo
 from evaluate_stereo import *
 import core.stereo_datasets as datasets
 
+DEVICE = "mps"
+
 try:
     from torch.cuda.amp import GradScaler
 except:
@@ -146,7 +148,7 @@ def train(args):
         model.load_state_dict(checkpoint, strict=True)
         logging.info(f"Done loading checkpoint")
 
-    model.cuda()
+    model.to(DEVICE)
     model.train()
     model.module.freeze_bn() # We keep BatchNorm frozen
 
@@ -160,7 +162,7 @@ def train(args):
 
         for i_batch, (_, *data_blob) in enumerate(tqdm(train_loader)):
             optimizer.zero_grad()
-            image1, image2, flow, valid = [x.cuda() for x in data_blob]
+            image1, image2, flow, valid = [x.to(DEVICE) for x in data_blob]
 
             assert model.training
             flow_predictions = model(image1, image2, iters=args.train_iters)

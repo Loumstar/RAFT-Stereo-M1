@@ -1,3 +1,9 @@
-raft-venv/
+# Remove all caching
+__pycache__
+.DS_Store
+
+# Remove large files
+raftenv/
 datasets/
 models/
+demo_output/
